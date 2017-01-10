@@ -8,4 +8,7 @@ let tree = Tree(from: fetree!)
 
 if let me = tree?.personFrom(name: "Ezekiel Elin") {
     print(me)
+    print(me.allSiblings)
+    print(me.fullSiblings)
+    print(me.halfSiblings)
 }

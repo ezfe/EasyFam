@@ -12,7 +12,11 @@ typealias PersonID = String
 
 class Tree {
     var people = [PersonID: Person]()
-    var partnerships = [Partnership]()
+    var partnerships = [Partnership]() {
+        didSet {
+            
+        }
+    }
     
     /**
      Attempts to load a person from their full name

@@ -56,12 +56,12 @@ class Person: CustomStringConvertible, Equatable, Hashable {
     //MARK:- Basic Relationships
  
     var mother: Person?
-    var father: Person?
-    var partner: Person?
+    weak var father: Person?
+    weak var partner: Person?
     
     //MARK:- Complex Relationships
     
-    lazy var children: Set<Person> = {
+    var children: Set<Person> {
         var people = Set<Person>()
         if let tree = self.tree {
             for (_, person) in tree.people where person.father === self || person.mother === self {
@@ -69,7 +69,36 @@ class Person: CustomStringConvertible, Equatable, Hashable {
             }
         }
         return people
-    }()
+    }
+    
+    var allSiblings: Set<Person> {
+        let fatherChildren = father?.children ?? Set<Person>()
+        let motherChildren = mother?.children ?? Set<Person>()
+        
+        let inteallChildren = fatherChildren.union(motherChildren)
+        return inteallChildren
+
+    }
+    
+    var fullSiblings: Set<Person> {
+        let fatherChildren = father?.children ?? Set<Person>()
+        let motherChildren = mother?.children ?? Set<Person>()
+        
+        let fullChildren = fatherChildren.intersection(motherChildren)
+        return fullChildren
+    }
+    
+    var halfSiblings: Set<Person> {
+        let fatherChildren = father?.children ?? Set<Person>()
+        let motherChildren = mother?.children ?? Set<Person>()
+        
+        let fullChildren = fatherChildren.intersection(motherChildren)
+        let allChildren = fatherChildren.union(motherChildren)
+        
+        let halfChildren = allChildren.subtracting(fullChildren)
+        
+        return halfChildren
+    }
     
     //MARK:- Contact Information
     
