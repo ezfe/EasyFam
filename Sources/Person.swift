@@ -226,13 +226,6 @@ class Person {
         self.deceased = familyEchoPerson.deceased == "1" ? true : false
         self.deathDate = dateForm.date(from: familyEchoPerson.deathDate ?? "")
         
-        //TODO: Implement
-        /*
-        self.mother = familyEchoPerson.mother
-        self.father = familyEchoPerson.father
-        self.partner = familyEchoPerson.partner
-        */
- 
         self.email = familyEchoPerson.email
         self.website = familyEchoPerson.website
         self.blog = familyEchoPerson.blog

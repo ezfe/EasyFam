@@ -4,5 +4,5 @@ let path = "/Users/ezekielelin/Library/Mobile Documents/com~apple~CloudDocs/Fami
 let url = URL(fileURLWithPath: path)
 
 let t = FamilyEchoTree(path: url)
-print(t?.people)
-print(t?.partnerships)
+let tree = Tree(from: t!)
+print(tree?.people["START"]?.father?.firstNames ?? "Error")

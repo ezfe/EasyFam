@@ -10,7 +10,7 @@ import Foundation
 
 struct FamilyEchoPartnership {
     
-    var memebers = [String]()
+    var members = [String]()
     
     //MARK: Partnership Basics
     
@@ -113,7 +113,7 @@ struct FamilyEchoPartnership {
             
             switch componentType {
             case .partnershipIdentifiers:
-                self.memebers = componentValue.components(separatedBy: " ")
+                self.members = componentValue.components(separatedBy: " ")
             case .annulmentDate:
                 self.annulmentDate = componentValue
             case .divorceDate:
