@@ -14,13 +14,32 @@ class Tree {
     var people = [PersonID: Person]()
     var partnerships = [Partnership]()
     
+    /**
+     Attempts to load a person from their full name
+     This will return the first matching person
+     */
+    func personFrom(name: String) -> Person? {
+        for (_, person) in people {
+            if "\(person.firstNames ?? "") \(person.surnameNow ?? "")" == name {
+                return person
+            } else if "\(person.firstNames ?? "") \(person.surnameBirth ?? "")" == name {
+                return person
+            }
+        }
+        return nil
+    }
+    
+    func personFrom(id: String) -> Person? {
+        return people[id]
+    }
+    
     init?(from fetree: FamilyEchoTree) {
         for feperson in fetree.people {
-            guard let person = Person(from: feperson) else {
+            guard let person = Person(from: feperson, in: self) else {
                 print("An error occurred loading a person")
                 return nil
             }
-            people[person.id] = person
+            people[person.identifier] = person
         }
         for feperson in fetree.people where feperson.father != nil || feperson.mother != nil || feperson.partner != nil {
             if let fid = feperson.father {

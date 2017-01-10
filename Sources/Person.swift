@@ -11,7 +11,9 @@ import Foundation
 /**
  * A person
  */
-class Person {
+class Person: CustomStringConvertible, Equatable, Hashable {
+    
+    weak var tree: Tree?
     
     /**
      Identifier
@@ -20,7 +22,7 @@ class Person {
      
      IDs are case sensitive and contain one or more characters from A-z, a-z or 0-9.
      */
-    var id: String
+    let identifier: String
     
     //MARK: Personal Information
     
@@ -30,28 +32,9 @@ class Person {
      Separated by spaces, e.g. `Mary Alice`
      */
     var firstNames: String?
-    
-    /**
-     Surname now
-     
-     Example: `Smith`
-     */
     var surnameNow: String?
-    
-    /**
-     Surname at birth
-     
-     Example: `Jones`
-     */
     var surnameBirth: String?
     
-    /**
-     Gender
-     
-     - `m` for male
-     - `f` for female
-     - `o` for other
-     */
     enum Gender: String {
         case male = "m"
         case female = "f"
@@ -76,148 +59,50 @@ class Person {
     var father: Person?
     var partner: Person?
     
+    //MARK:- Complex Relationships
+    
+    lazy var children: Set<Person> = {
+        var people = Set<Person>()
+        if let tree = self.tree {
+            for (_, person) in tree.people where person.father === self || person.mother === self {
+                people.insert(person)
+            }
+        }
+        return people
+    }()
+    
     //MARK:- Contact Information
     
-    /**
-     Email
-     
-     Example: `mary@smith.org`
-     */
     var email: String?
-    
-    /**
-     Website
-     
-     Example: `http://www.mary.com/`
-     */
     var website: String?
-    
-    /**
-     Blog
-     
-     Example: `http://mary.blogspot.com/`
-     */
     var blog: String?
-    
-    /**
-     Photo site
-     
-     Example: `http://www.mary.com/photos/`
-     */
     var photoSite: String?
-    
-    /**
-     Home tel
-     
-     Example: `212 123 4567`
-     */
     var homeTel: String?
-    
-    /**
-     Work tel
-     
-     Example: `212 789 3456`
-     */
     var workTel: String?
-    
-    /**
-     Mobile
-     
-     Example: `212 123 2468`
-     */
     var mobileTel: String?
-    
-    /**
-     Skype
-     
-     Example: `mary_alice_smith`
-     */
     var skype: String?
-    
-    /**
-     Address
-     
-     Example: `123 Mass Ave\nNew York 10024\nUSA`
-     */
     var address: String?
-    
-    /**
-     Other contact
-     
-     Example: `ICQ maryalice123`
-     */
     var otherContact: String?
     
     //MARK:- Biographical Information
     
-    /**
-     Birth place
-     
-     Example: `Chicago`
-     */
     var birthPlace: String?
-    
-    /**
-     Death place
-     
-     Ignored if person has not died (see z)
-     */
     var deathPlace: String?
-    
-    /**
-     Burial place
-     
-     Ignored if person has not died (see z)
-     */
     var burialPlace: String?
-    
-    /**
-     Burial date
-     
-     `YYYYMMDD` - see note on dates.
-     */
-    var burialDate: String?
-    
-    /**
-     Profession
-     
-     Example: `Administrator`
-     */
+    var burialDate: Date?
     var profession: String?
-    
-    /**
-     Company
-     
-     Example: `Acme Corporation`
-     */
     var company: String?
-    
-    /**
-     Interests
-     
-     Example: `Movies, literature, history`
-     */
     var interests: String?
-    
-    /**
-     Activities
-     
-     Example: `Travel, painting`
-     */
     var activities: String?
-    
-    /**
-     Bio notes
-     
-     Example: `Also lived in Netherlands`
-     */
     var bioNotes: String?
     
-    init?(from familyEchoPerson: FamilyEchoPerson) {
+    init?(from familyEchoPerson: FamilyEchoPerson, in tree: Tree) {
+        self.tree = tree
+        
         let dateForm = DateFormatter()
         dateForm.dateFormat = "yyyyMMdd"
         
-        self.id = familyEchoPerson.id
+        self.identifier = familyEchoPerson.id
         self.firstNames = familyEchoPerson.firstNames
         self.surnameNow = familyEchoPerson.surnameNow
         self.surnameBirth = familyEchoPerson.surnameBirth
@@ -240,11 +125,23 @@ class Person {
         self.birthPlace = familyEchoPerson.birthPlace
         self.deathPlace = familyEchoPerson.deathPlace
         self.burialPlace = familyEchoPerson.burialPlace
-        self.burialDate = familyEchoPerson.burialDate
+        self.burialDate = dateForm.date(from: familyEchoPerson.burialDate ?? "")
         self.profession = familyEchoPerson.profession
         self.company = familyEchoPerson.company
         self.interests = familyEchoPerson.interests
         self.activities = familyEchoPerson.activities
         self.bioNotes = familyEchoPerson.bioNotes
+    }
+    
+    var description: String {
+        return "\(firstNames ?? "_") \(surnameNow ?? (surnameBirth ?? "_"))"
+    }
+    
+    static func ==(lhs: Person, rhs: Person) -> Bool {
+        return lhs.identifier == rhs.identifier
+    }
+    
+    var hashValue: Int {
+        return identifier.hashValue
     }
 }
