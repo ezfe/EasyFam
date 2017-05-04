@@ -14,7 +14,7 @@ struct FamilyEchoTree {
     
     init?(path: URL) {
         do {
-            let lines = try String(contentsOf: path).components(separatedBy: "\n")
+            let lines = try String(contentsOf: path).components(separatedBy: .newlines)
             for line in lines where line.characters.count > 0 {
                 let startIndex = line.startIndex
                 let firstCharacter: String = line[startIndex..<line.index(after: startIndex)]
